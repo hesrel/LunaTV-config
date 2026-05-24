@@ -24,9 +24,9 @@ const EXCLUDE_HEADERS = new Set([
 ])
 
 const JSON_SOURCES = {
-  'jin18': 'https://raw.githubusercontent.com/hafrey1/LunaTV-config/refs/heads/main/jin18.json',
-  'jingjian': 'https://raw.githubusercontent.com/hafrey1/LunaTV-config/refs/heads/main/jingjian.json',
-  'full': 'https://raw.githubusercontent.com/hafrey1/LunaTV-config/refs/heads/main/LunaTV-config.json'
+  'jin18': 'https://raw.githubusercontent.com/hesrel/LunaTV-config/refs/heads/main/jin18.json',
+  'jingjian': 'https://raw.githubusercontent.com/hesrel/LunaTV-config/refs/heads/main/jingjian.json',
+  'full': 'https://raw.githubusercontent.com/hesrel/LunaTV-config/refs/heads/main/LunaTV-config.json'
 }
 
 const FORMAT_CONFIG = {
@@ -134,12 +134,15 @@ async function handleRequest(request) {
   const prefixParam = reqUrl.searchParams.get('prefix')
   const sourceParam = reqUrl.searchParams.get('source')
 
-  const currentOrigin = reqUrl.origin
-  const defaultPrefix = currentOrigin + '/?url='
+  const currentOrigin = reqUrl.origin + pathname
+  const defaultPrefix = currentOrigin + '?url='
+  const config_path = await KV.get('config_path')
 
   // 🩺 健康检查（最常见的性能检查，提前处理）
   if (pathname === '/health') {
     return new Response('OK', { status: 200, headers: CORS_HEADERS })
+  } else if (pathname !== config_path) {
+    return new Response("Not Found", { status: 404 });
   }
 
   // 通用代理请求处理
